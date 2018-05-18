@@ -1,0 +1,60 @@
+    "{{INTERPRETER_ID}}": {
+      "id": "{{INTERPRETER_ID}}",
+      "name": "{{INTERPRETER_NAME}}",
+      "group": "python",
+      "properties": {
+        "zeppelin.interpreter.output.limit": "102400",
+        "zeppelin.python": "{{PYTHON_INTERPRETER_EXEC}}",
+        "zeppelin.python.maxResult": "1000"
+      },
+      "status": "READY",
+      "interpreterGroup": [
+        {
+          "name": "python",
+          "class": "org.apache.zeppelin.python.PythonInterpreter",
+          "defaultInterpreter": true,
+          "editor": {
+            "language": "python",
+            "editOnDblClick": false
+          }
+        },
+        {
+          "name": "sql",
+          "class": "org.apache.zeppelin.python.PythonInterpreterPandasSql",
+          "defaultInterpreter": false,
+          "editor": {
+            "language": "sql",
+            "editOnDblClick": false
+          }
+        },
+        {
+          "name": "conda",
+          "class": "org.apache.zeppelin.python.PythonCondaInterpreter",
+          "defaultInterpreter": false,
+          "editor": {
+            "language": "sh",
+            "editOnDblClick": false
+          }
+        },
+        {
+          "name": "docker",
+          "class": "org.apache.zeppelin.python.PythonDockerInterpreter",
+          "defaultInterpreter": false,
+          "editor": {
+            "language": "sh",
+            "editOnDblClick": false
+          }
+        }
+      ],
+      "dependencies": [],
+      "option": {
+        "remote": true,
+        "port": -1,
+        "perNote": "{{PYTHON_INTERPRETER_MODE_FOR_NOTE}}",
+        "perUser": "{{PYTHON_INTERPRETER_MODE_FOR_USER}}",
+        "isExistingProcess": false,
+        "setPermission": false,
+        "users": [],
+        "isUserImpersonate": false
+      }
+    },

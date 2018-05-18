@@ -1,0 +1,33 @@
+{
+  "schema_version": 1,
+  "name": "ZEPPELIN",
+  "version": "%VERSION%",
+  "setActiveSymlink": true,
+
+  "provides": [
+    "zeppelin"
+  ],
+
+  "replaces": "",
+  "conflicts": "",
+
+  "scripts": {
+    "defines": "zeppelin_env.sh"
+  },
+  "groups": [
+    "zeppelin"
+  ],
+  "users": {
+    "zeppelin": {
+      "longname": "zeppelin",
+      "home": "/home/zeppelin",
+      "shell": "/bin/bash",
+      "extra_groups": [ "zeppelin" ]
+    }
+  },
+  "packages": [],
+  "components": []
+}
+
+
+

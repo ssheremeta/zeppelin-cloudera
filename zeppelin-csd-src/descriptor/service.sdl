@@ -1,0 +1,236 @@
+{
+  "name": "ZEPPELIN",
+  "label": "Zeppelin",
+  "description": "Apache Zeppelin is a web-based notebook that enables interactive data analytics. You can make beautiful data-driven, interactive and collaborative documents with SQL, Scala and more.",
+  "version": "0.7.3",
+  "compatibility": {
+    "cdhVersion": {
+      "min": "5.11.0"
+    }
+  },
+  "runAs": {
+    "user": "zeppelin",
+    "group": "zeppelin",
+    "principal": "zeppelin"
+  },
+  "inExpressWizard": true,
+  "icon": "images/icon.png",
+  "parcel": {
+    "requiredTags": [
+      "zeppelin"
+    ],
+    "optionalTags": [
+      "zeppelin-plugin"
+    ]
+  },
+  "serviceDependencies": [],
+  "hdfsDirs": [],
+  "serviceInit": {
+    "preStartSteps": []
+  },
+  "parameters": [],
+  "rolesWithExternalLinks" : ["ZEPPELIN_SERVER"],
+  "roles": [
+    {
+      "name": "ZEPPELIN_SERVER",
+      "label": "Zeppelin Server",
+      "pluralLabel": "Zeppelin Servers",
+      "jvmBased": true,
+      "startRunner": {
+        "program": "scripts/control.sh",
+        "args": [
+          "start"
+        ],
+        "environmentVariables": {
+          "ZEPPELIN_LOG_DIR": "${log_dir}",
+          "ZEPPELIN_MEMORY": "${zeppelin_max_heapsize}",
+          "ZEPPELIN_INTERPRETER_LIST": "${zeppelin_interpreter_list}",
+          "ZEPPELIN_SHIRO_ENABLED": "${zeppelin_shiro_enabled}",
+          "ZEPPELIN_DATA_DIR": "${zeppelin_data_dir}",
+          "PYTHON_INTERPRETER_EXEC": "${python_interpreter_exec}",
+          "PYTHON_INTERPRETER_MODE_FOR_NOTE": "${python_interpreter_mode_for_note}",
+          "PYTHON_INTERPRETER_MODE_FOR_USER": "${python_interpreter_mode_for_user}"
+        }
+      },
+      "kerberosPrincipals": [
+        {
+          "name": "ZEPPELIN_PRINCIPAL",
+          "primary": "${principal}",
+          "instance": "${host}"
+        }
+      ],
+      "commands": [],
+      "topology": {
+        "minInstances": 1,
+        "maxInstances": 1
+      },
+      "logging": {
+        "configFilename": "zeppelin-conf/log4j.properties",
+        "dir": "/var/log/zeppelin",
+        "filename": "zeppelin-server-${host}.log",
+        "modifiable": true,
+        "loggingType": "log4j"
+      },
+      "parameters": [
+        {
+          "name": "zeppelin_server_port",
+          "label": "Zeppelin Server Port",
+          "configName": "zeppelin.server.port",
+          "description": "Zeppelin server port.",
+          "required": "true",
+          "type": "port",
+          "default": 8080,
+          "configurableInWizard": true
+        },
+        {
+          "name": "zeppelin_anonymous_allowed",
+          "label": "Anonymous Allowed",
+          "configName": "zeppelin.anonymous.allowed",
+          "description": "Whether anonymous access to Zeppelin is allowed.",
+          "required": "false",
+          "type": "boolean",
+          "default": true
+        },
+        {
+          "name": "zeppelin_shiro_enabled",
+          "label": "Shiro Enabled",
+          "description": "Whether Shiro authentication should be enabled.",
+          "required": "false",
+          "type": "boolean",
+          "default": false
+        },
+        {
+          "name": "zeppelin_notebook_public",
+          "label": "Notebooks Public By Default",
+          "description": "Whether to set Notebooks to be public by default.",
+          "configName": "zeppelin.notebook.public",
+          "required": "false",
+          "type": "boolean",
+          "default": false
+        },
+        {
+          "name": "zeppelin_interpreter_list",
+          "label": "Zeppelin Interpreter List",
+          "description": "List of Zeppelin interpreters to enable. Allowed values are: alluxio, angular, beam, bigquery, cassandra, elasticsearch, file, flink, hbase, ignite, jdbc, kylin, lens, livy, md, pig, postgresql, python, scio, shell.",
+          "required": "false",
+          "type": "string_array",
+          "separator": " ",
+          "default": [
+            "python",
+            "md"
+          ]
+        },
+        {
+          "name": "zeppelin_data_dir",
+          "label": "Zeppelin Data Directory",
+          "description": "The root data directory where the notebook and jetty temporary directories are stored.",
+          "required": "false",
+          "type": "path",
+          "pathType": "localDataDir",
+          "default": "/home/zeppelin/data",
+          "required": "true",
+          "minLength": 1,
+          "configurableInWizard": true
+        },
+        {
+          "name": "zeppelin_max_heapsize",
+          "label": "Java Heap Size of Zeppelin Server in Bytes",
+          "description": "Maximum size for the Java process heap memory. Passed to Java -Xmx. Measured in bytes.",
+          "required": "true",
+          "type": "memory",
+          "unit": "bytes",
+          "min": 67108864,
+          "default": 268435456
+        },
+        {
+          "name": "python_interpreter_exec",
+          "label": "Path to executable for Python Interpreter",
+          "description": "Path for python executable",
+          "type": "path",
+          "pathType": "localDataFile",
+          "default": "python",
+          "required": "true",
+          "minLength": 1
+        },
+        {
+          "name": "python_interpreter_mode_for_note",
+          "label": "Python Interpreter mode for notes",
+          "description": "In 'shared' mode, every notebook bound to the Interpreter Setting will share the single Interpreter instance. In 'scoped' mode, each notebook will create new Interpreter instance in the same interpreter process. In 'isolated' mode, each notebook will create new Interpreter process.",
+          "type": "string_enum",
+          "validValues": [
+            "shared",
+            "scoped",
+            "isolated"
+          ],
+          "default": "shared"
+        },
+        {
+          "name": "python_interpreter_mode_for_user",
+          "label": "Python Interpreter mode for users",
+          "description": "In the case of the per user scope (available in a multi-user environment), Zeppelin manages interpreter sessions on a per user basis rather than a per note basis.",
+          "type": "string_enum",
+          "validValues": [
+            "shared",
+            "scoped",
+            "isolated"
+          ],
+          "default": "scoped"
+        }
+      ],
+      "externalLink" : {
+        "name" : "zeppelin_server_address",
+        "label" : "Zeppelin Server Web UI",
+        "url" : "http://${host}:${zeppelin_server_port}"
+      },
+      "configWriter": {
+        "generators": [
+          {
+            "filename": "zeppelin-conf/zeppelin-site.xml",
+            "configFormat": "hadoop_xml",
+            "includedParams": [
+              "zeppelin_server_port",
+              "zeppelin_anonymous_allowed",
+              "zeppelin_notebook_public"
+            ],
+            "additionalConfigs" : [
+              {
+                "key" : "zeppelin.war.tempdir",
+                "value" : "${zeppelin_data_dir}/webapps"
+              },
+              {
+                "key" : "zeppelin.notebook.dir",
+                "value" : "${zeppelin_data_dir}/notebook"
+              },
+              {
+                "key" : "zeppelin.dep.localrepo",
+                "value" : "${zeppelin_data_dir}/local-repo"
+              },
+              {
+                "key" : "zeppelin.interpreter.localRepo",
+                "value" : "${zeppelin_data_dir}/local-repo"
+              }
+            ]
+          }
+        ],
+        "auxConfigGenerators": [
+          {
+            "filename": "zeppelin-conf/zeppelin-env.sh",
+            "sourceFilename": "aux/client/zeppelin-env.sh"
+          },
+          {
+            "filename": "zeppelin-conf/shiro.ini",
+            "sourceFilename": "aux/client/shiro.ini"
+          },
+          {
+            "filename": "zeppelin-conf/interpreter.json",
+            "sourceFilename": "aux/client/interpreter.json"
+          },
+          {
+            "filename": "zeppelin-conf/python.interpreter.json",
+            "sourceFilename": "aux/client/python.interpreter.json"
+          }
+        ]
+      }
+    }
+  ]
+}
